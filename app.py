@@ -82,4 +82,8 @@ class User(Resource):
 def main_index():
     return "This is OPS Crud service - GET/POST/PUT/DELETE - http://127.0.0.1:5000/user/'string:name'"
 
+@app.route('/ping')
+def ping():
+    return ""
+
 api.add_resource(User, "/user/<string:name>")
