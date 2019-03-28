@@ -1,8 +1,13 @@
-from flask import Flask
+from flask import Flask, redirect
 from flask_restful import Api, Resource, reqparse
+from healthcheck import HealthCheck, EnvironmentDump
 
 app = Flask(__name__)
 api = Api(app)
+
+# wrap the flask app and give a heathcheck url
+health = HealthCheck(app, "/healthcheck")
+envdump = EnvironmentDump(app, "/environment")
 
 users = [
     {
@@ -84,6 +89,6 @@ def main_index():
 
 @app.route('/ping')
 def ping():
-    return ""
+    return redirect('/healthcheck')
 
 api.add_resource(User, "/user/<string:name>")
