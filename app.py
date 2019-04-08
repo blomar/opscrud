@@ -1,13 +1,20 @@
 from flask import Flask, redirect
 from flask_restful import Api, Resource, reqparse
 from healthcheck import HealthCheck, EnvironmentDump
+import os
+
+service_name = os.getenv('SERVICE_NAME', '')
+
+prefix = ''
+if service_name:
+    prefix = '/' + service_name
 
 app = Flask(__name__)
 api = Api(app)
 
 # wrap the flask app and give a heathcheck url
-health = HealthCheck(app, "/healthcheck")
-envdump = EnvironmentDump(app, "/environment")
+health = HealthCheck(app, prefix + "/healthcheck")
+envdump = EnvironmentDump(app, prefix + "/environment")
 
 users = [
     {
@@ -83,12 +90,8 @@ class User(Resource):
         users = [user for user in users if user["name"] != name]
         return "{} is deleted.".format(name), 200
 
-@app.route('/')
+@app.route(prefix + '/')
 def main_index():
     return "This is OPS Crud service - GET/POST/PUT/DELETE - http://127.0.0.1:5000/user/'string:name'"
 
-@app.route('/ping')
-def ping():
-    return redirect('/healthcheck')
-
-api.add_resource(User, "/user/<string:name>")
+api.add_resource(User, prefix + "/user/<string:name>")
