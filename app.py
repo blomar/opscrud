@@ -92,6 +92,6 @@ class User(Resource):
 
 @app.route(prefix + '/')
 def main_index():
-    return "This is OPS Crud service - GET/POST/PUT/DELETE - http://127.0.0.1:5000/user/'string:name'"
+    return "This is OPS an service - GET/POST/PUT/DELETE - http://127.0.0.1:5000/" + prefix + "/user/'string:name'"
 
 api.add_resource(User, prefix + "/user/<string:name>")
