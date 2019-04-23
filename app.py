@@ -3,7 +3,10 @@ from flask_restful import Api, Resource, reqparse
 from healthcheck import HealthCheck, EnvironmentDump
 import os
 
-service_name = os.getenv('SERVICE_NAME', '')
+service_name = os.getenv('SERVICE_NAME', '-')
+service_version = os.getenv('SERVICE_VERSION', '-')
+service_environment = os.getenv('SERVICE_ENVIRONMENT', '-')
+
 
 prefix = ''
 if service_name:
@@ -13,8 +16,8 @@ app = Flask(__name__)
 api = Api(app)
 
 # wrap the flask app and give a heathcheck url
-health = HealthCheck(app, prefix + "/healthcheck")
-envdump = EnvironmentDump(app, prefix + "/environment")
+health = HealthCheck(app, prefix + "/admin/healthcheck")
+envdump = EnvironmentDump(app, prefix + "/admin/environment")
 
 users = [
     {
@@ -92,6 +95,6 @@ class User(Resource):
 
 @app.route(prefix + '/')
 def main_index():
-    return "This is OPS an service - GET/POST/PUT/DELETE - http://127.0.0.1:5000/" + prefix + "/user/'string:name'"
+    return 'NAME: %s\nVERSION: %s\nENVIRONMENT: %s\n' % (service_name, service_version, service_environment)
 
 api.add_resource(User, prefix + "/user/<string:name>")
