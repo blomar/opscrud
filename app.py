@@ -1,6 +1,10 @@
 from flask import Flask, redirect
 from flask_restful import Api, Resource, reqparse
 from healthcheck import HealthCheck, EnvironmentDump
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+from aws_xray_sdk.core import patch_all
+
 import os
 
 service_name = os.getenv('SERVICE_NAME', '-')
@@ -15,6 +19,10 @@ if service_name:
 app = Flask(__name__)
 api = Api(app)
 
+xray_recorder.configure(service=service_name)
+XRayMiddleware(app, xray_recorder)
+patch_all()
+
 # wrap the flask app and give a heathcheck url
 health = HealthCheck(app, prefix + "/admin/healthcheck")
 envdump = EnvironmentDump(app, prefix + "/admin/environment")
@@ -23,7 +31,7 @@ users = [
     {
         "name": "Jonas",
         "age": 12,
-        "occupation": "Network Engineer"
+        "occupation": "Racing Driver"
     },
     {
         "name": "Viktor",
@@ -31,9 +39,9 @@ users = [
         "occupation": "Doctor"
     },
     {
-        "name": "Jerret",
+        "name": "Jerrett",
         "age": 14,
-        "occupation": "Web Developer"
+        "occupation": "Super Hero"
     },
     {
         "name": "Martin",
