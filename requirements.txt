@@ -3,3 +3,4 @@ flask_restful
 healthcheck
 six
 aws-xray-sdk
+json-logging
