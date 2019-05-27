@@ -5,6 +5,8 @@ from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from aws_xray_sdk.core import patch_all
 
+from time import sleep
+import random
 import logging
 import json_logging
 import sys
@@ -118,5 +120,14 @@ class User(Resource):
 def main_index():
     LOGGER.info('main_index', extra = {'props' : {'name' : service_name, 'version' : service_version, 'environment' : service_environment}})
     return 'NAME: %s\nVERSION: %s\nENVIRONMENT: %s\n' % (service_name, service_version, service_environment)
+
+@app.route(prefix + '/stats')
+def stats():
+    random_float_number = random.uniform(0.01, 4.0)
+    if (random_float_number > 3.0):
+        return ('ERROR %s' % random_float_number), 500
+    else:
+        sleep(random_float_number)
+        return 'OK', 200
 
 api.add_resource(User, prefix + '/user/<string:name>')
