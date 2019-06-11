@@ -4,6 +4,7 @@ from healthcheck import HealthCheck, EnvironmentDump
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from aws_xray_sdk.core import patch_all
+from prometheus_flask_exporter import PrometheusMetrics
 
 from time import sleep
 import random
@@ -37,6 +38,13 @@ LOGGER.info('start application - %s', service_name)
 xray_recorder.configure(service=service_name)
 XRayMiddleware(app, xray_recorder)
 patch_all()
+
+# Metrics
+metrics = PrometheusMetrics(app, export_defaults=False, path=prefix + '/admin/metrics', defaults_prefix=service_name,
+                            group_by='path', buckets=None, registry=None)
+
+metrics.info('app_info', 'Application info', version=service_version, service_name=service_name,
+             service_environment=service_environment)
 
 # wrap the flask app and give a heathcheck url
 health = HealthCheck(app, prefix + '/admin/healthcheck')
