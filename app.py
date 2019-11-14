@@ -15,7 +15,10 @@ import os
 service_name = os.getenv('SERVICE_NAME', '-')
 service_version = os.getenv('SERVICE_VERSION', '-')
 service_environment = os.getenv('SERVICE_ENVIRONMENT', '-')
+app_mesh_version = os.getenv('APPMESH_VERSION', '-')
 prefix = ('/%s' % service_name)
+
+db_password = os.getenv('DB_PASSWORD', '-')
 
 #Logging
 json_logging.ENABLE_JSON_LOGGING = True
@@ -45,23 +48,23 @@ envdump = EnvironmentDump(app, prefix + '/admin/environment')
 users = [
     {
         'name': 'Jonas',
-        'age': 12,
+        'age': 123,
         'occupation': 'Racing Driver'
     },
     {
         'name': 'Viktor',
-        'age': 13,
+        'age': 456,
         'occupation': 'Doctor'
     },
     {
         'name': 'Jerrett',
-        'age': 14,
+        'age': 789,
         'occupation': 'Super Hero'
     },
     {
         'name': 'Martin',
-        'age': 15,
-        'occupation': 'Cleaner'
+        'age': 999,
+        'occupation': 'Dancer'
     }
 ]
 
@@ -118,8 +121,8 @@ class User(Resource):
 
 @app.route(prefix + '/')
 def main_index():
-    LOGGER.info('main_index', extra = {'props' : {'name' : service_name, 'version' : service_version, 'environment' : service_environment}})
-    return 'NAME: %s\nVERSION: %s\nENVIRONMENT: %s\n' % (service_name, service_version, service_environment)
+    LOGGER.info('main_index', extra = {'props' : {'name' : service_name, 'version' : service_version, 'environment' : service_environment, 'db_password': db_password}})
+    return '\nNAME: %s\nVERSION: %s\nENVIRONMENT: %s\nAPPMESH_VERSION: %s \nDB_PASSWORD: %s' % (service_name, service_version, service_environment, app_mesh_version, db_password)
 
 @app.route(prefix + '/stats')
 def stats():
