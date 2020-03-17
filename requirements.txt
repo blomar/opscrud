@@ -3,4 +3,6 @@ flask_restful
 healthcheck
 six
 aws-xray-sdk
-json-logging
+cloudwatch-fluent-metrics
+arrow==0.14.6
+boto3==1.9.220
