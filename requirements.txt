@@ -4,5 +4,5 @@ healthcheck
 six
 aws-xray-sdk
 cloudwatch-fluent-metrics
-arrow==0.14.6
+arrow==0.15.1
 boto3==1.9.220
